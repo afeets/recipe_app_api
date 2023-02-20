@@ -13,12 +13,19 @@ EXPOSE 8000
 ARG DEV=false
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
+    # postgres requirements for django to connect db
+    apk add --update --no-cache postgresql-client && \
+    # virtual dependency packages
+    apk add --update --no-cache --virtual .tmp-build-deps \
+        build-base postgresql-dev musl-dev && \
     /py/bin/pip install -r /tmp/requirements.txt && \
     # dev testing install flake8 for linting
     if [ ${DEV} = "true" ]; \
         then /py/bin/pip install -r /tmp/requirements.dev.txt ; \
     fi && \
     rm -rf /tmp && \
+    # remove excess packages
+    apk del .tmp-build-deps && \
     adduser \
         --disabled-password \
         --no-create-home \
