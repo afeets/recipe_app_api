@@ -6,6 +6,7 @@ from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
+
 class AdminSiteTests(TestCase):
     """Tests for Django Admin"""
 
@@ -33,7 +34,7 @@ class AdminSiteTests(TestCase):
 
     def test_edit_user_page(self):
         """Test the edit user page works"""
-        url = reverse('admin:core_user_change', args=[ self.user.id ])
+        url = reverse('admin:core_user_change', args=[self.user.id])
         res = self.client.get(url)
 
         """Check page loads correctly"""
