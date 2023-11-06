@@ -1,6 +1,7 @@
 FROM python:3.9-alpine3.13
 LABEL maintainer="Andy Feetenby"
 
+# recommended running python in Docker Container
 ENV PYTHONUNBUFFERED 1
 
 COPY ./requirements.txt /tmp/requirements.txt
@@ -12,25 +13,27 @@ EXPOSE 8000
 
 ARG DEV=false
 RUN python -m venv /py && \
-    /py/bin/pip install --upgrade pip && \
-    # postgres requirements for django to connect db
-    apk add --update --no-cache postgresql-client && \
-    # virtual dependency packages
-    apk add --update --no-cache --virtual .tmp-build-deps \
-        build-base postgresql-dev musl-dev && \
-    /py/bin/pip install -r /tmp/requirements.txt && \
-    # dev testing install flake8 for linting
-    if [ ${DEV} = "true" ]; \
-        then /py/bin/pip install -r /tmp/requirements.dev.txt ; \
-    fi && \
-    rm -rf /tmp && \
-    # remove excess packages
-    apk del .tmp-build-deps && \
-    adduser \
-        --disabled-password \
-        --no-create-home \
-        django-user
+	/py/bin/pip install --upgrade pip && \
+	# postgres requirements for django to connect db
+	apk add --update --no-cache postgresql-client && \
+	# virtual dependency packages
+	apk add --update --no-cache --virtual .tmp-build-deps \
+	build-base postgresql-dev musl-dev && \
+	/py/bin/pip install -r /tmp/requirements.txt && \
+	# dev testing install flake8 for linting
+	if [ ${DEV} = "true" ]; \
+	then /py/bin/pip install -r /tmp/requirements.dev.txt ; \
+	fi && \
+	rm -rf /tmp && \
+	# remove excess packages
+	apk del .tmp-build-deps && \
+	# create linux user account
+	adduser \
+	--disabled-password \
+	--no-create-home \
+	django-user
 
+# update environment variable to include /py/bin
 ENV PATH="/py/bin:$PATH"
-
+# specify user to switch to
 USER django-user

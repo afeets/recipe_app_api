@@ -11,7 +11,7 @@ class AdminSiteTests(TestCase):
     """Tests for Django Admin"""
 
     def setUp(self):
-        """Create user and client"""
+        """Create superuser and user"""
         self.client = Client()
         self.admin_user = get_user_model().objects.create_superuser(
             email='admin@example.com',
