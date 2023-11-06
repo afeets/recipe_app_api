@@ -30,8 +30,8 @@ class UserSerializer(serializers.ModelSerializer):
 class AuthTokenSerializer(serializers.Serializer):
   """ Serializer for user auth token """
   email = serializers.EmailField()
+  """ hide text in browser """
   password = serializers.CharField(
-    """ hide text in browser """
     style={'input_type': 'password'},
     trim_whitespace=False,
   )
