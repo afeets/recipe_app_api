@@ -13,6 +13,7 @@ from django.urls import (
 """ auto creates recipe endpoints """
 router = DefaultRouter()
 router.register('recipes', views.RecipeViewSet)
+router.register('tags', views.TagViewSet)
 
 app_name = 'recipe'
 
