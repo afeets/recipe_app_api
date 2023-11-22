@@ -29,11 +29,15 @@ RUN python -m venv /py && \
 	apk del .tmp-build-deps && \
 	# create linux user account
 	adduser \
-	--disabled-password \
-	--no-create-home \
-	django-user
+		--disabled-password \
+		--no-create-home \
+		django-user && \
+	mkdir -p /vol/web/media && \
+	mkdir -p /vol/web/static && \
+	chown -R django-user:django-user /vol && \
+	chmod -R 755 /vol
 
-# update environment variable to include /py/bin
-ENV PATH="/py/bin:$PATH"
+	# update environment variable to include /py/bin
+	ENV PATH="/py/bin:$PATH"
 # specify user to switch to
 USER django-user
