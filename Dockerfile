@@ -15,10 +15,10 @@ ARG DEV=false
 RUN python -m venv /py && \
 	/py/bin/pip install --upgrade pip && \
 	# postgres requirements for django to connect db
-	apk add --update --no-cache postgresql-client && \
+	apk add --update --no-cache postgresql-client jpeg-dev && \
 	# virtual dependency packages
 	apk add --update --no-cache --virtual .tmp-build-deps \
-	build-base postgresql-dev musl-dev && \
+	build-base postgresql-dev musl-dev zlib zlib-dev && \
 	/py/bin/pip install -r /tmp/requirements.txt && \
 	# dev testing install flake8 for linting
 	if [ ${DEV} = "true" ]; \
