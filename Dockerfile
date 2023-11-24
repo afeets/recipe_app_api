@@ -6,6 +6,7 @@ ENV PYTHONUNBUFFERED 1
 
 COPY ./requirements.txt /tmp/requirements.txt
 COPY ./requirements.dev.txt /tmp/requirements.dev.txt
+COPY ./scripts /scripts
 COPY ./app /app
 WORKDIR /app
 EXPOSE 8000
@@ -18,7 +19,7 @@ RUN python -m venv /py && \
 	apk add --update --no-cache postgresql-client jpeg-dev && \
 	# virtual dependency packages
 	apk add --update --no-cache --virtual .tmp-build-deps \
-	build-base postgresql-dev musl-dev zlib zlib-dev && \
+	build-base postgresql-dev musl-dev zlib zlib-dev linux-headers && \
 	/py/bin/pip install -r /tmp/requirements.txt && \
 	# dev testing install flake8 for linting
 	if [ ${DEV} = "true" ]; \
@@ -35,9 +36,12 @@ RUN python -m venv /py && \
 	mkdir -p /vol/web/media && \
 	mkdir -p /vol/web/static && \
 	chown -R django-user:django-user /vol && \
-	chmod -R 755 /vol
+	chmod -R 755 /vol && chmod -R +x /scripts
 
 	# update environment variable to include /py/bin
-	ENV PATH="/py/bin:$PATH"
+	ENV PATH="/scripts:/py/bin:$PATH"
 # specify user to switch to
 USER django-user
+
+# script to run uWSGI app 
+CMD ["run.sh"]
